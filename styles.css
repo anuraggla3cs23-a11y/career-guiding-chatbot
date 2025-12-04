@@ -1,0 +1,512 @@
+:root {
+    --bg-gradient-start: #0b1f3a;
+    --bg-gradient-end: #1a4c8f;
+    --bot-bubble: rgba(29, 82, 166, 0.85);
+    --user-bubble: rgba(12, 24, 46, 0.9);
+    --accent: #4ad0ff;
+    --accent-strong: #46ffca;
+    --text-primary: #f5f8ff;
+    --text-secondary: #c6d4f8;
+    --timestamp: rgba(198, 212, 248, 0.7);
+    --shadow: rgba(0, 0, 0, 0.35);
+    --border: rgba(255, 255, 255, 0.1);
+    --bubble-radius-lg: 20px;
+    --bubble-radius-sm: 6px;
+    --transition-speed: 0.2s ease;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+    background: radial-gradient(circle at 0 0, rgba(76, 201, 240, 0.25), transparent 60%),
+        radial-gradient(circle at 100% 0, rgba(109, 255, 189, 0.17), transparent 50%),
+        linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--text-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at 20% 20%, rgba(70, 255, 202, 0.09), transparent 40%),
+        radial-gradient(circle at 80% 30%, rgba(74, 208, 255, 0.08), transparent 40%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.app-shell {
+    position: relative;
+    width: min(920px, 100%);
+    height: min(640px, 90vh);
+    background: rgba(8, 20, 42, 0.82);
+    border-radius: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(28px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(135deg, rgba(18, 44, 84, 0.95), rgba(20, 58, 109, 0.95));
+}
+
+.title-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.bot-avatar {
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, rgba(70, 255, 202, 0.18), rgba(74, 208, 255, 0.25));
+    border-radius: 18px;
+    font-size: 28px;
+}
+
+.app-header h1 {
+    font-size: 1.65rem;
+    font-weight: 600;
+}
+
+.app-header p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.primary-button,
+.secondary-button,
+.icon-button {
+    border: none;
+    cursor: pointer;
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed), background var(--transition-speed);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.primary-button {
+    padding: 12px 18px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(74, 208, 255, 0.25), rgba(70, 255, 202, 0.35));
+    border: 1px solid rgba(74, 208, 255, 0.3);
+    box-shadow: 0 10px 25px rgba(74, 208, 255, 0.18);
+}
+
+.secondary-button {
+    padding: 12px 18px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.icon-button {
+    width: 52px;
+    height: 52px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 1.2rem;
+    position: relative;
+}
+
+.icon-button svg {
+    width: 24px;
+    height: 24px;
+    fill: rgba(255, 255, 255, 0.85);
+}
+
+.icon-label {
+    position: absolute;
+    clip: rect(0 0 0 0);
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    border: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.primary-button:hover,
+.secondary-button:hover,
+.icon-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 28px rgba(0, 0, 0, 0.25);
+}
+
+.primary-button:active,
+.secondary-button:active,
+.icon-button:active {
+    transform: translateY(1px);
+}
+
+.chat-container {
+    flex: 1;
+    overflow: hidden;
+}
+
+.chat-window {
+    height: 100%;
+    overflow-y: auto;
+    padding: 28px 32px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    scroll-behavior: smooth;
+}
+
+.chat-window::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-window::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+}
+
+.chat-window::-webkit-scrollbar-thumb {
+    background: rgba(74, 208, 255, 0.25);
+    border-radius: 8px;
+}
+
+.message {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    animation: fadeIn 0.3s ease;
+}
+
+.bot-message {
+    justify-content: flex-start;
+}
+
+.user-message {
+    justify-content: flex-end;
+}
+
+.bubble {
+    max-width: 70%;
+    padding: 16px 18px;
+    border-radius: var(--bubble-radius-lg);
+    line-height: 1.55;
+    position: relative;
+    font-size: 0.98rem;
+}
+
+.bot-message .bubble {
+    background: var(--bot-bubble);
+    border-bottom-left-radius: var(--bubble-radius-sm);
+    border: 1px solid rgba(74, 208, 255, 0.3);
+}
+
+.user-message .bubble {
+    background: var(--user-bubble);
+    border-bottom-right-radius: var(--bubble-radius-sm);
+    border: 1px solid rgba(70, 255, 202, 0.25);
+}
+
+.message .timestamp {
+    font-size: 0.7rem;
+    color: var(--timestamp);
+    align-self: flex-end;
+    padding-bottom: 6px;
+}
+
+.typing .bubble {
+    display: inline-flex;
+    width: 60px;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+}
+
+.typing-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.8);
+    animation: bounce 1.2s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.chat-input-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px 28px;
+    border-top: 1px solid var(--border);
+    background: linear-gradient(135deg, rgba(9, 26, 52, 0.96), rgba(16, 44, 89, 0.96));
+}
+
+#userInput {
+    flex: 1;
+    height: 52px;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0 18px;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-primary);
+    outline: none;
+    transition: border var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+#userInput:focus {
+    border-color: rgba(74, 208, 255, 0.4);
+    box-shadow: 0 0 0 4px rgba(74, 208, 255, 0.12);
+}
+
+#userInput::placeholder {
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.link-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.link-card {
+    background: rgba(255, 255, 255, 0.08);
+    padding: 12px 14px;
+    border-radius: 14px;
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.link-card a {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.link-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 32px rgba(0, 0, 0, 0.25);
+}
+
+.summary-card {
+    background: rgba(11, 31, 58, 0.85);
+    border: 1px solid rgba(74, 208, 255, 0.25);
+    border-radius: 20px;
+    padding: 18px 20px;
+    margin-top: 8px;
+    display: grid;
+    gap: 12px;
+}
+
+.summary-card h3 {
+    font-size: 1.1rem;
+    color: rgba(70, 255, 202, 0.85);
+}
+
+.summary-card ul {
+    list-style: none;
+    display: grid;
+    gap: 8px;
+}
+
+.summary-card li::before {
+    content: "•";
+    color: rgba(74, 208, 255, 0.85);
+    margin-right: 6px;
+}
+
+.resource-section {
+    margin-top: 12px;
+}
+
+.resource-section h4 {
+    margin-bottom: 8px;
+    color: rgba(74, 208, 255, 0.9);
+    font-size: 0.95rem;
+}
+
+.resource-section ul {
+    list-style: none;
+    display: grid;
+    gap: 6px;
+}
+
+.resource-section a {
+    color: var(--accent-strong);
+    text-decoration: none;
+}
+
+.message strong {
+    color: rgba(248, 252, 255, 0.98);
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(74, 208, 255, 0.16);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    margin-top: 8px;
+}
+
+.status-pill {
+    background: rgba(70, 255, 202, 0.18);
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 0.78rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.voice-active::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border: 2px solid rgba(74, 208, 255, 0.65);
+    border-radius: 22px;
+    animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.12);
+        opacity: 0;
+    }
+}
+
+@keyframes bounce {
+    0%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-6px);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 16px;
+    }
+
+    .app-shell {
+        height: min(90vh, 720px);
+        border-radius: 24px;
+    }
+
+    .app-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 18px;
+    }
+
+    .action-buttons {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .primary-button,
+    .secondary-button {
+        flex: 1 1 160px;
+        justify-content: center;
+    }
+
+    .bubble {
+        max-width: 82%;
+    }
+
+    .chat-window {
+        padding: 22px 20px 16px;
+    }
+
+    .chat-input-bar {
+        padding: 18px;
+    }
+}
+
+@media (max-width: 520px) {
+    .app-shell {
+        height: 100vh;
+        width: 100vw;
+        border-radius: 0;
+    }
+
+    .app-header {
+        padding: 18px;
+    }
+
+    .title-group {
+        gap: 12px;
+    }
+
+    .bot-avatar {
+        width: 46px;
+        height: 46px;
+        font-size: 24px;
+    }
+
+    .primary-button,
+    .secondary-button,
+    .icon-button {
+        border-radius: 14px;
+    }
+
+    #userInput {
+        height: 48px;
+        border-radius: 14px;
+    }
+}
